@@ -10,28 +10,69 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
-  login(
+  async login(
     @Res({ passthrough: true }) res: Response,
     @Body() userDto: CreateUserDto,
   ) {
-    return this.authService.login(userDto, res);
+    const { accessToken, email, refreshToken } = await this.authService.login(
+      userDto,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return {
+      accessToken,
+      email,
+    };
   }
 
   @Post('/registration')
-  registration(
+  async registration(
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.registration(userDto, res);
+    const { accessToken, email, refreshToken } =
+      await this.authService.registration(userDto);
+    res.cookie('refreshToken', refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return {
+      accessToken,
+      email,
+    };
   }
 
   @Post('/logout')
-  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    return this.authService.logout(req, res);
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const { refreshToken } = req.cookies;
+    const token = await this.authService.logout(refreshToken);
+    res.clearCookie('refreshToken');
+
+    return token;
   }
 
   @Get('/refresh')
-  refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    return this.authService.refresh(req, res);
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refreshToken } = req.cookies;
+    const userData = await this.authService.refresh(refreshToken);
+    res.cookie('refreshToken', userData.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    const { accessToken, email } = userData;
+
+    return {
+      accessToken,
+      email,
+    };
   }
 }

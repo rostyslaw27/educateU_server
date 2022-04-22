@@ -8,7 +8,6 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from '../user/user.schema';
-import { Request, Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,7 +23,7 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async registration(userDto: CreateUserDto, res: Response) {
+  async registration(userDto: CreateUserDto) {
     const candidate = await this.userModel.findOne({ email: userDto.email });
 
     if (candidate) {
@@ -55,18 +54,14 @@ export class AuthService {
 
     await this.tokenService.saveToken(user._id, refreshToken);
 
-    res.cookie('refreshToken', refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-
-    return res.json({
-      token: accessToken,
+    return {
+      accessToken,
+      refreshToken,
       email: userDto.email,
-    });
+    };
   }
 
-  async login(userDto: CreateUserDto, res: Response) {
+  async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
 
     const { refreshToken, accessToken } = this.tokenService.generateTokens({
@@ -77,27 +72,20 @@ export class AuthService {
 
     await this.tokenService.saveToken(user._id, refreshToken);
 
-    res.cookie('refreshToken', refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-
-    return res.json({
-      token: accessToken,
+    return {
+      accessToken,
+      refreshToken,
       email: userDto.email,
-    });
+    };
   }
 
-  async logout(req: Request, res: Response) {
-    const { refreshToken } = req.cookies;
+  async logout(refreshToken: string) {
     const token = await this.tokenService.removeToken(refreshToken);
-    res.clearCookie('refreshToken');
-    return res.json(token);
+
+    return token;
   }
 
-  async refresh(req: Request, res: Response) {
-    const { refreshToken } = req.cookies;
-
+  async refresh(refreshToken: string) {
     if (!refreshToken) {
       throw new UnauthorizedException({
         message: 'User is not authorized',
@@ -121,15 +109,10 @@ export class AuthService {
     });
     await this.tokenService.saveToken(user._id, tokens.refreshToken);
 
-    res.cookie('refreshToken', tokens.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-
-    return res.json({
-      token: tokens.accessToken,
+    return {
+      ...tokens,
       email: user.email,
-    });
+    };
   }
 
   private async validateUser(userDto: CreateUserDto): Promise<UserDocument> {
