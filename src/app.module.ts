@@ -8,6 +8,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
+import { LessonModule } from './lesson/lesson.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { TokenModule } from './token/token.module';
     RoleModule,
     UserModule,
     AuthModule,
+    LessonModule,
+    FileModule,
   ],
   controllers: [],
   providers: [],
