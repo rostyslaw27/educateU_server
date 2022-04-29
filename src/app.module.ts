@@ -10,6 +10,10 @@ import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
 import { LessonModule } from './lesson/lesson.module';
 import { FileModule } from './file/file.module';
+import { CourseModule } from './course/course.module';
+import { ResponseModule } from './response/response.module';
+import { QuestionModule } from './question/question.module';
+import { AnswerModule } from './answer/answer.module';
 
 @Module({
   imports: [
@@ -48,6 +52,10 @@ import { FileModule } from './file/file.module';
     AuthModule,
     LessonModule,
     FileModule,
+    CourseModule,
+    ResponseModule,
+    QuestionModule,
+    AnswerModule,
   ],
   controllers: [],
   providers: [],
