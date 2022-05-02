@@ -7,7 +7,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 export class CourseController {
   constructor(private courseService: CourseService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() dto: CreateCourseDto) {
     return this.courseService.create(dto);
   }

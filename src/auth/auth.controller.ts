@@ -14,7 +14,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() userDto: CreateUserDto,
   ) {
-    const { accessToken, email, refreshToken } = await this.authService.login(
+    const { accessToken, user, refreshToken } = await this.authService.login(
       userDto,
     );
 
@@ -25,7 +25,7 @@ export class AuthController {
 
     return {
       accessToken,
-      email,
+      user,
     };
   }
 
@@ -34,7 +34,7 @@ export class AuthController {
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { accessToken, email, refreshToken } =
+    const { accessToken, user, refreshToken } =
       await this.authService.registration(userDto);
     res.cookie('refreshToken', refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -43,7 +43,7 @@ export class AuthController {
 
     return {
       accessToken,
-      email,
+      user,
     };
   }
 
@@ -68,11 +68,11 @@ export class AuthController {
       httpOnly: true,
     });
 
-    const { accessToken, email } = userData;
+    const { accessToken, user } = userData;
 
     return {
       accessToken,
-      email,
+      user,
     };
   }
 }
