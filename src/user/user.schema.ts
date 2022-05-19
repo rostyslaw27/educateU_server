@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Role } from '../role/role.schema';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Course } from 'src/course/course.schema';
 
 export type UserDocument = User & Document;
 
@@ -35,6 +36,20 @@ export class User {
   @ApiProperty({ example: 'ADMIN', description: 'User roles' })
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Role' }] })
   roles: Role[];
+
+  @ApiProperty({
+    example: 'Purchased Courses List',
+    description: 'Purchased Courses List',
+  })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }] })
+  purchasedCourses: Course[];
+
+  @ApiProperty({
+    example: 'Created Courses List',
+    description: 'Created Courses List',
+  })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }] })
+  createdCourses: Course[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

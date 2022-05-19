@@ -46,18 +46,32 @@ export class Course {
   createdBy: User;
 
   @ApiProperty({
+    example: 'Picture',
+    description: 'Course picture',
+  })
+  @Prop({ required: true })
+  picture: string;
+
+  @ApiProperty({
     example: 'Course lessons',
     description: 'Course lessons',
   })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] })
   lessons: Lesson[];
 
   @ApiProperty({
     example: 'Course responses',
     description: 'Course responses',
   })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Response' })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Response' }] })
   responses: Response[];
+
+  @ApiProperty({
+    example: 'Purchasers',
+    description: 'Users who bought the course',
+  })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  purchasers: User[];
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

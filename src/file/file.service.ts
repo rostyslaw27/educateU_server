@@ -25,5 +25,13 @@ export class FileService {
     }
   }
 
-  //removeFile(fileName: string) {}
+  removeFile(fileName: string) {
+    try {
+      const filePath = path.resolve(__dirname, '..', 'static');
+      fs.unlinkSync(path.resolve(filePath, fileName));
+      return fileName;
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

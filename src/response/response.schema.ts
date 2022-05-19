@@ -20,7 +20,7 @@ export class Response {
     example: '4.5',
     description: 'Course rating',
   })
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   rating: number;
 
   @ApiProperty({

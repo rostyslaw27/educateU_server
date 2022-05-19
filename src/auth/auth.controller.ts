@@ -25,6 +25,7 @@ export class AuthController {
 
     return {
       accessToken,
+      refreshToken,
       user,
     };
   }
@@ -43,6 +44,7 @@ export class AuthController {
 
     return {
       accessToken,
+      refreshToken,
       user,
     };
   }
@@ -50,6 +52,7 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { refreshToken } = req.cookies;
+    //console.log(refreshToken);
     const token = await this.authService.logout(refreshToken);
     res.clearCookie('refreshToken');
 
@@ -72,6 +75,7 @@ export class AuthController {
 
     return {
       accessToken,
+      refreshToken,
       user,
     };
   }

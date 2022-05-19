@@ -1,15 +1,21 @@
+import { ObjectId } from 'mongoose';
 import {
   Body,
   Controller,
+  Delete,
+  Get,
+  Param,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { LessonService } from './lesson.service';
+import { UpdateLessonDto } from './dto/update-lesson.dto';
 
-@Controller('lesson')
+@Controller('lessons')
 export class LessonController {
   constructor(private lessonService: LessonService) {}
 
@@ -18,5 +24,20 @@ export class LessonController {
   create(@UploadedFiles() files, @Body() dto: CreateLessonDto) {
     const { video } = files;
     return this.lessonService.create(dto, video[0]);
+  }
+
+  @Put('/:id')
+  update(@Body() dto: UpdateLessonDto) {
+    return this.lessonService.update(dto);
+  }
+
+  @Get(':id')
+  getOne(@Param('id') id: ObjectId) {
+    return this.lessonService.getOne(id);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: ObjectId) {
+    return this.lessonService.delete(id);
   }
 }
