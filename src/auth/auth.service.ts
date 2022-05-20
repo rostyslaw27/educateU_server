@@ -59,7 +59,7 @@ export class AuthService {
       refreshToken,
       user: {
         email: userDto.email,
-        id: user._id,
+        _id: user._id,
       },
     };
   }
@@ -80,7 +80,7 @@ export class AuthService {
       refreshToken,
       user: {
         email: userDto.email,
-        id: user._id,
+        _id: user._id,
       },
     };
   }
@@ -119,7 +119,7 @@ export class AuthService {
       ...tokens,
       user: {
         email: user.email,
-        id: user._id,
+        _id: user._id,
       },
     };
   }

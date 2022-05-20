@@ -2,7 +2,6 @@ import { Model, ObjectId } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Course, CourseDocument } from './course.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateResponseDto } from 'src/response/dto/create-response.dto';
 import { Response, ResponseDocument } from 'src/response/response.schema';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -69,7 +68,9 @@ export class CourseService {
   }
 
   async getAll(): Promise<Course[]> {
-    const courses = await this.courseModel.find();
+    const courses = await this.courseModel
+      .find()
+      .populate('createdBy', '_id email');
     return courses;
   }
 
@@ -77,6 +78,7 @@ export class CourseService {
     const course = await this.courseModel
       .findById(id)
       .populate('createdBy', '_id email')
+      .populate('purchasers', '_id email')
       .populate('lessons')
       .populate('responses');
 

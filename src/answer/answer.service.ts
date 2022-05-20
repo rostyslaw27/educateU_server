@@ -26,7 +26,7 @@ export class AnswerService {
     const answers = await this.answerModel
       .find({ questionId: id })
       .sort({ date: -1 })
-      .populate('createdBy', 'email');
+      .populate('createdBy', 'email _id');
 
     return answers;
   }

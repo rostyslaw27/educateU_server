@@ -32,7 +32,7 @@ export class ResponseService {
   async getByCourseId(id: ObjectId): Promise<Response[]> {
     const responses = await this.responseModel
       .find({ courseId: id })
-      .populate('createdBy', 'email')
+      .populate('createdBy', 'email _id')
       .sort({ date: -1 });
     return responses;
   }
